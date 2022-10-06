@@ -2,12 +2,16 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
+
     }
   }
 }
 
 provider "aws" {
-  region  = "us-west-2"
+  #region  = "us-west-2"
+  region = var.aws_region #First var use
+  access_key = "AKIAWLKBVGLYNOVVGVUC"
+  secret_key = "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"
 }
 
 data "aws_availability_zones" "available" {
@@ -18,7 +22,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "2.64.0"
 
-  cidr = "10.0.0.0/16"
+  cidr = var.vpc_cidr_block #Second use of var
 
   azs             = data.aws_availability_zones.available.names
   private_subnets = ["10.0.101.0/24", "10.0.102.0/24"]
@@ -117,5 +121,6 @@ module "ec2_instances" {
   tags = {
     project     = "project-alpha",
     environment = "dev"
+    Name = "BayInstance"
   }
 }
